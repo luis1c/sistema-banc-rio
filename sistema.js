@@ -31,6 +31,7 @@ class Conta {
         console.log("Instruções gerais para o uso das contas.");
     }
 
+    // Getters e Setters
     get numeroConta() {
         return this.#numeroConta;
     }
@@ -72,6 +73,17 @@ class ContaCorrente extends Conta {
             console.log(conta);
         }
     }
+
+    // Ponto Extra: método para fechar conta corrente
+    fecharConta() {
+        const index = ContaCorrente.contasCorrente.indexOf(this.numeroConta);
+        if (index !== -1) {
+            ContaCorrente.contasCorrente.splice(index, 1);
+            console.log(`Conta corrente ${this.numeroConta} fechada com sucesso.`);
+        } else {
+            console.log("Conta corrente não encontrada.");
+        }
+    }
 }
 
 // Classe ContaPoupanca
@@ -99,6 +111,17 @@ class ContaPoupanca extends Conta {
     static verificarMelhorInvestimento() {
         console.log(`Melhores Investimentos: ${ContaPoupanca.melhoresInvestimentos}`);
     }
+
+    // Método para transferir dinheiro para outra conta poupança
+    transferir(valor, contaDestino) {
+        if (valor <= this.saldo && contaDestino instanceof ContaPoupanca) {
+            this.saldo -= valor;
+            contaDestino.saldo += valor;
+            console.log(`Transferência de ${valor} para a conta ${contaDestino.numeroConta} realizada com sucesso.`);
+        } else {
+            console.log("Transferência não autorizada.");
+        }
+    }
 }
 
 // Exemplo de uso
@@ -109,9 +132,17 @@ contaCorrente.gerenciarLimiteChequeEspecial(1000);
 contaCorrente.calcularTaxaManutencao();
 ContaCorrente.listarTodasContasCorrente();
 
-const contaPoupanca = new ContaPoupanca(54321, 500, "Maria", "Médica", 0.05, 3);
-contaPoupanca.criarConta();
-contaPoupanca.checarExtrato();
-contaPoupanca.calcularJuros();
-contaPoupanca.gerenciarLimiteSaques(5);
+const contaPoupanca1 = new ContaPoupanca(54321, 500, "Maria", "Médica", 0.05, 3);
+contaPoupanca1.criarConta();
+contaPoupanca1.checarExtrato();
+contaPoupanca1.calcularJuros();
+contaPoupanca1.gerenciarLimiteSaques(5);
 ContaPoupanca.verificarMelhorInvestimento();
+
+const contaPoupanca2 = new ContaPoupanca(98765, 200, "Ana", "Advogada", 0.04, 2);
+contaPoupanca2.transferir(100, contaPoupanca1);
+contaPoupanca1.checarExtrato();
+contaPoupanca2.checarExtrato();
+
+contaCorrente.fecharConta();
+ContaCorrente.listarTodasContasCorrente();
