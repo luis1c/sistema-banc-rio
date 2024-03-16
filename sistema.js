@@ -42,6 +42,17 @@ class Conta {
     set saldo(novoSaldo) {
         this.#saldo = novoSaldo;
     }
+
+    // Método para tranferir dinheiro entre contas
+    transferir(valor, contaDestino) {
+        if (valor <= this.saldo) {
+            this.saldo -= valor;
+            contaDestino.saldo += valor;
+            console.log(`Transferência de ${valor} da conta de ${this.nomeUsuario} - ${this.numeroConta} para a conta de ${contaDestino.nomeUsuario} - ${contaDestino.numeroConta} realizada com sucesso.`);
+        } else {
+            console.log(`Transferência da conta de ${this.nomeUsuario} - ${this.numeroConta} não autorizada. Saldo insuficiente.`);
+        }
+    }
 }
 
 // Classe ContaCorrente
@@ -123,14 +134,18 @@ class ContaPoupanca extends Conta {
         console.log(`Melhores Investimentos: ${ContaPoupanca.melhoresInvestimentos}`);
     }
 
-    // Método para transferir dinheiro para outra conta poupança
+    // Método para transferir dinheiro entre contas
     transferir(valor, contaDestino) {
-        if (valor <= this.saldo && contaDestino instanceof ContaPoupanca) {
-            this.saldo -= valor;
-            contaDestino.saldo += valor;
-            console.log(`Transferência de ${valor} para a conta ${contaDestino.numeroConta} realizada com sucesso.`);
+        if (valor <= this.saldo) {
+            if (contaDestino instanceof Conta) {
+                this.saldo -= valor;
+                contaDestino.saldo += valor;
+                console.log(`Transferência de ${valor} da conta de ${this.nomeUsuario} - ${this.numeroConta} para a conta de ${contaDestino.nomeUsuario} - ${contaDestino.numeroConta} realizada com sucesso.`);
+            } else {
+                console.log("Conta de destino inválida.");
+            }
         } else {
-            console.log("Transferência não autorizada.");
+            console.log(`Transferência da conta de ${this.nomeUsuario} - ${this.numeroConta} não autorizada. Saldo insuficiente.`);
         }
     }
 }
@@ -152,6 +167,16 @@ EduardaCorrente.verificarLimiteChequeEspecial();
 EduardaCorrente.calcularTaxaManutencao();
 ContaCorrente.listarTodasContasCorrente();
 
+const BrunaCorrente = new ContaCorrente(55667, 7000, "Bruna", "DevOps", 3500, 10);
+BrunaCorrente.criarConta();
+BrunaCorrente.checarExtrato();
+BrunaCorrente.verificarLimiteChequeEspecial();
+BrunaCorrente.calcularTaxaManutencao();
+BrunaCorrente.transferir(100, LuisCorrente);
+LuisCorrente.checarExtrato();
+BrunaCorrente.checarExtrato();
+ContaCorrente.listarTodasContasCorrente();
+
 const MariaPoupanca = new ContaPoupanca(54321, 500, "Maria", "Médica", 0.05, 3);
 MariaPoupanca.criarConta();
 MariaPoupanca.checarExtrato();
@@ -163,8 +188,8 @@ const AnaPoupanca = new ContaPoupanca(98765, 200, "Ana", "Advogada", 0.04, 2);
 AnaPoupanca.criarConta();
 AnaPoupanca.checarExtrato();
 AnaPoupanca.calcularJuros();
-AnaPoupanca.transferir(100, MariaPoupanca);
-MariaPoupanca.checarExtrato();
+AnaPoupanca.transferir(10000000, EduardaCorrente);
+EduardaCorrente.checarExtrato();
 AnaPoupanca.checarExtrato();
 
 ContaCorrente.listarTodasContasCorrente();
