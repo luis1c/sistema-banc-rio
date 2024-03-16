@@ -46,9 +46,13 @@ class Conta {
     // Método para tranferir dinheiro entre contas
     transferir(valor, contaDestino) {
         if (valor <= this.saldo) {
-            this.saldo -= valor;
-            contaDestino.saldo += valor;
-            console.log(`Transferência de ${valor} da conta de ${this.nomeUsuario} - ${this.numeroConta} para a conta de ${contaDestino.nomeUsuario} - ${contaDestino.numeroConta} realizada com sucesso.`);
+            if (contaDestino instanceof Conta) {
+                this.saldo -= valor;
+                contaDestino.saldo += valor;
+                console.log(`Transferência de ${valor} da conta de ${this.nomeUsuario} - ${this.numeroConta} para a conta de ${contaDestino.nomeUsuario} - ${contaDestino.numeroConta} realizada com sucesso.`);
+            } else {
+                console.log("Conta de destino inválida.");
+            }
         } else {
             console.log(`Transferência da conta de ${this.nomeUsuario} - ${this.numeroConta} não autorizada. Saldo insuficiente.`);
         }
@@ -65,11 +69,11 @@ class ContaCorrente extends Conta {
         super(numeroConta, saldoInicial, nomeUsuario, profissaoUsuario);
         this.#limiteChequeEspecial = limiteChequeEspecial;
         this.#taxaManutencao = taxaManutencao;
-        ContaCorrente.contasCorrente.push(numeroConta);
+        ContaCorrente.contasCorrente.push(this); //Atualiza o array adicionando a instância atual
     }
 
     criarConta() {
-        console.log("Conta Corrente criada com sucesso.");
+        console.log(`Conta Corrente de ${this.nomeUsuario} - ${this.numeroConta} criada com sucesso.`);
     }
 
     verificarLimiteChequeEspecial() {
@@ -85,19 +89,20 @@ class ContaCorrente extends Conta {
         console.log(`Taxa de manutenção: ${this.#taxaManutencao}`);
     }
 
+    // Método para listar todas as contas corrente
     static listarTodasContasCorrente() {
-        console.log("Contas Corrente:");
+        console.log("Todas as Contas Corrente Ativas:");
         for (const conta of ContaCorrente.contasCorrente) {
-            console.log(conta);
+            console.log(`Número da Conta: ${conta.numeroConta}, Nome do Usuário: ${conta.nomeUsuario}`);
         }
     }
 
     // Método para fechar conta corrente
     fecharConta() {
-        const index = ContaCorrente.contasCorrente.indexOf(this.numeroConta);
+        const index = ContaCorrente.contasCorrente.indexOf(this);
         if (index !== -1) {
             ContaCorrente.contasCorrente.splice(index, 1);
-            console.log(`Conta corrente ${this.numeroConta} fechada com sucesso.`);
+            console.log(`Conta corrente de ${this.nomeUsuario} - ${this.numeroConta} fechada com sucesso.`);
         } else {
             console.log("Conta corrente não encontrada.");
         }
@@ -108,16 +113,18 @@ class ContaCorrente extends Conta {
 class ContaPoupanca extends Conta {
     #taxaJuros;
     #limiteSaques;
-    static melhoresInvestimentos = ["Tesouro Direto", "Ações"];
+    static contasPoupanca = [];
+    static melhoresInvestimentos = ["Tesouro Direto", " Fundos Imobiliários", " Ações"];
 
     constructor(numeroConta, saldoInicial, nomeUsuario, profissaoUsuario, taxaJuros, limiteSaques) {
         super(numeroConta, saldoInicial, nomeUsuario, profissaoUsuario);
         this.#taxaJuros = taxaJuros;
         this.#limiteSaques = limiteSaques;
+        ContaPoupanca.contasPoupanca.push(this); //Atualiza o array adicionando a instância atual
     }
 
     criarConta() {
-        console.log("Conta Poupança criada com sucesso.");
+        console.log(`Conta Poupança de ${this.nomeUsuario} - ${this.numeroConta} criada com sucesso.`);
     }
 
     calcularJuros() {
@@ -134,18 +141,22 @@ class ContaPoupanca extends Conta {
         console.log(`Melhores Investimentos: ${ContaPoupanca.melhoresInvestimentos}`);
     }
 
-    // Método para transferir dinheiro entre contas
-    transferir(valor, contaDestino) {
-        if (valor <= this.saldo) {
-            if (contaDestino instanceof Conta) {
-                this.saldo -= valor;
-                contaDestino.saldo += valor;
-                console.log(`Transferência de ${valor} da conta de ${this.nomeUsuario} - ${this.numeroConta} para a conta de ${contaDestino.nomeUsuario} - ${contaDestino.numeroConta} realizada com sucesso.`);
-            } else {
-                console.log("Conta de destino inválida.");
-            }
+    // Método para listar todas as contas poupança
+    static listarTodasContasPoupancas() {
+        console.log("Todas as Contas Poupança Ativas:");
+        for (const conta of ContaPoupanca.contasPoupanca) {
+            console.log(`Número da Conta: ${conta.numeroConta}, Nome do Usuário: ${conta.nomeUsuario}`);
+        }
+    }
+    
+    // Método para fechar uma conta poupança
+    fecharConta() {
+        const index = ContaPoupanca.contasPoupanca.indexOf(this);
+        if (index !== -1) {
+            ContaPoupanca.contasPoupanca.splice(index, 1);
+            console.log(`Conta poupança de ${this.nomeUsuario} - ${this.numeroConta} fechada com sucesso.`);
         } else {
-            console.log(`Transferência da conta de ${this.nomeUsuario} - ${this.numeroConta} não autorizada. Saldo insuficiente.`);
+            console.log("Conta poupança não encontrada.");
         }
     }
 }
@@ -191,5 +202,15 @@ AnaPoupanca.calcularJuros();
 AnaPoupanca.transferir(10000000, EduardaCorrente);
 EduardaCorrente.checarExtrato();
 AnaPoupanca.checarExtrato();
+
+const AndrePoupanca = new ContaPoupanca(16843, 900, "André", "Professor", 0.08, 4);
+AndrePoupanca.criarConta();
+AndrePoupanca.checarExtrato();
+AndrePoupanca.calcularJuros();
+AndrePoupanca.gerenciarLimiteSaques(7);
+
+AndrePoupanca.fecharConta()
+MariaPoupanca.fecharConta()
+ContaPoupanca.listarTodasContasPoupancas();
 
 ContaCorrente.listarTodasContasCorrente();
