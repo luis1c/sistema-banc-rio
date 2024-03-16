@@ -31,7 +31,6 @@ class Conta {
         console.log("Instruções gerais para o uso das contas.");
     }
 
-    // Getters e Setters
     get numeroConta() {
         return this.#numeroConta;
     }
@@ -58,6 +57,14 @@ class ContaCorrente extends Conta {
         ContaCorrente.contasCorrente.push(numeroConta);
     }
 
+    criarConta() {
+        console.log("Conta Corrente criada com sucesso.");
+    }
+
+    verificarLimiteChequeEspecial() {
+        console.log(`Limite de Cheque Especial: ${this.#limiteChequeEspecial}`);
+    }
+
     gerenciarLimiteChequeEspecial(novoLimite) {
         this.#limiteChequeEspecial = novoLimite;
         console.log(`Limite do Cheque Especial alterado para ${novoLimite}.`);
@@ -74,7 +81,7 @@ class ContaCorrente extends Conta {
         }
     }
 
-    // Ponto Extra: método para fechar conta corrente
+    // Método para fechar conta corrente
     fecharConta() {
         const index = ContaCorrente.contasCorrente.indexOf(this.numeroConta);
         if (index !== -1) {
@@ -96,6 +103,10 @@ class ContaPoupanca extends Conta {
         super(numeroConta, saldoInicial, nomeUsuario, profissaoUsuario);
         this.#taxaJuros = taxaJuros;
         this.#limiteSaques = limiteSaques;
+    }
+
+    criarConta() {
+        console.log("Conta Poupança criada com sucesso.");
     }
 
     calcularJuros() {
@@ -125,24 +136,35 @@ class ContaPoupanca extends Conta {
 }
 
 // Exemplo de uso
-const contaCorrente = new ContaCorrente(12345, 1000, "Luís", "Full Stack Developer", 500, 10);
-contaCorrente.criarConta();
-contaCorrente.checarExtrato();
-contaCorrente.gerenciarLimiteChequeEspecial(1000);
-contaCorrente.calcularTaxaManutencao();
+const LuisCorrente = new ContaCorrente(12345, 1000, "Luís", "Full Stack Developer", 500, 10);
+LuisCorrente.criarConta();
+LuisCorrente.checarExtrato();
+LuisCorrente.verificarLimiteChequeEspecial();
+LuisCorrente.gerenciarLimiteChequeEspecial(1000);
+LuisCorrente.calcularTaxaManutencao();
+ContaCorrente.listarTodasContasCorrente();
+LuisCorrente.fecharConta();
+
+const EduardaCorrente = new ContaCorrente(99887, 3000, "Eduarda", "Professora", 1500, 10);
+EduardaCorrente.criarConta();
+EduardaCorrente.checarExtrato();
+EduardaCorrente.verificarLimiteChequeEspecial();
+EduardaCorrente.calcularTaxaManutencao();
 ContaCorrente.listarTodasContasCorrente();
 
-const contaPoupanca1 = new ContaPoupanca(54321, 500, "Maria", "Médica", 0.05, 3);
-contaPoupanca1.criarConta();
-contaPoupanca1.checarExtrato();
-contaPoupanca1.calcularJuros();
-contaPoupanca1.gerenciarLimiteSaques(5);
+const MariaPoupanca = new ContaPoupanca(54321, 500, "Maria", "Médica", 0.05, 3);
+MariaPoupanca.criarConta();
+MariaPoupanca.checarExtrato();
+MariaPoupanca.calcularJuros();
+MariaPoupanca.gerenciarLimiteSaques(5);
 ContaPoupanca.verificarMelhorInvestimento();
 
-const contaPoupanca2 = new ContaPoupanca(98765, 200, "Ana", "Advogada", 0.04, 2);
-contaPoupanca2.transferir(100, contaPoupanca1);
-contaPoupanca1.checarExtrato();
-contaPoupanca2.checarExtrato();
+const AnaPoupanca = new ContaPoupanca(98765, 200, "Ana", "Advogada", 0.04, 2);
+AnaPoupanca.criarConta();
+AnaPoupanca.checarExtrato();
+AnaPoupanca.calcularJuros();
+AnaPoupanca.transferir(100, MariaPoupanca);
+MariaPoupanca.checarExtrato();
+AnaPoupanca.checarExtrato();
 
-contaCorrente.fecharConta();
 ContaCorrente.listarTodasContasCorrente();
