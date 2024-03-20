@@ -46,7 +46,7 @@ class Conta {
         this.#saldo = novoSaldo;
     }
 
-    // Método para tranferir dinheiro entre contas
+    // Método para tranferir dinheiro entre contas, verifica se há saldo suficiente para a transferência, se a conta destino existe e exibe mensagem se sucesso ou falha
     transferir(valor, contaDestino) {
         if (valor <= this.saldo) {
             if (contaDestino instanceof Conta) {
@@ -108,11 +108,11 @@ class ContaCorrente extends Conta {
         console.log("Todas as Contas Corrente Ativas:");
         for (const conta of ContaCorrente.contasCorrente) {
             console.log(`Nome do Usuário: ${conta.nomeUsuario}; Número da Conta: ${conta.numeroConta}`);
-            console.log("*******************************************************");
         }
+        console.log("*******************************************************");
     }
 
-    // Método para fechar uma conta corrente
+    // Método para fechar uma conta corrente específica
     fecharConta() {
         const index = ContaCorrente.contasCorrente.indexOf(this);
         if (index !== -1) {
@@ -171,8 +171,8 @@ class ContaPoupanca extends Conta {
         console.log("Todas as Contas Poupança Ativas:");
         for (const conta of ContaPoupanca.contasPoupanca) {
             console.log(`Nome do Usuário: ${conta.nomeUsuario}; Número da Conta: ${conta.numeroConta}`);
-            console.log("*******************************************************");
         }
+        console.log("*******************************************************");
     }
     
     // Método para fechar uma conta poupança
@@ -237,6 +237,6 @@ AndrePoupanca.gerenciarLimiteSaques(7);
 
 EduardaCorrente.fecharConta()
 MariaPoupanca.fecharConta()
-ContaPoupanca.listarTodasContasPoupancas();
 
+ContaPoupanca.listarTodasContasPoupancas();
 ContaCorrente.listarTodasContasCorrente();
